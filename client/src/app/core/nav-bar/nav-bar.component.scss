@@ -1,0 +1,15 @@
+.heading {
+    font-weight: 600;
+}
+
+.nav-link-text {
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        color: #fff;
+    }
+
+    &.active {
+        color: #fff;
+    }
+}

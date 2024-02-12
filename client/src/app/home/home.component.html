@@ -1,0 +1,24 @@
+<div class="container mt-5">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <h1 class="text-center fw-bold display-5">More than just shorter links</h1>
+        <p class="text-center text-body-secondary text">Build your brand's recognition and get detailed insights<br> on how your links are performing</p>
+        <button class="btn btn-lg btn-secondary">Get started</button>
+    </div>
+
+    <div class="my-5 px-5">
+        <form [formGroup]="linkForm" (ngSubmit)="convertLink()" class="d-flex flex-column flex-sm-row gap-1" autocomplete="off">
+            <input 
+                formControlName="link"
+                type="text" 
+                class="form-control" 
+                placeholder="Shorten a link here..."
+            >
+            <button [disabled]="!linkForm.valid" class="btn btn-success" type="submit">Shorten</button>
+        </form>
+    </div>
+
+    <div class="container d-flex flex-column align-items-center justify-content-center">
+        <h1 class="text-center fw-bold display-5">Advanced statistics</h1>
+        <p class="text-center text-body-secondary">Track how your links are performing across the web with <br>our advanced <a routerLink="/analytics">statistics dashboard</a></p>
+    </div>
+</div>
