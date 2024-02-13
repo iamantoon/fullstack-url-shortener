@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -9,8 +10,12 @@ import { LinkListComponent } from './link-list/link-list.component';
 import { MyLinksComponent } from './my-links/my-links.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { RegisterComponent } from './register/register.component';
-import { ToastrModule } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LinkItemComponent } from './link-item/link-item.component';
+import { TimeagoModule } from 'ngx-timeago';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { SharedModule } from './_modules/shared/shared.module';
+import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -19,16 +24,22 @@ import { ReactiveFormsModule } from '@angular/forms';
     LinkListComponent,
     MyLinksComponent,
     AnalyticsComponent,
-    RegisterComponent
+    RegisterComponent,
+    LinkItemComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    ToastrModule.forRoot({positionClass: 'toast-bottom-right'}),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TimeagoModule.forRoot(),
+    HttpClientModule,
+    BrowserAnimationsModule,
+    SharedModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

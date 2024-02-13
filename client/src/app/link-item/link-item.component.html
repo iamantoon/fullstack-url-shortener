@@ -1,0 +1,13 @@
+<div class="card mb-4 rounded-3 shadow-sm" *ngIf="link">
+    <div class="card-header py-3">
+        <h4 class="my-0 fw-normal text-center"><a href="{{link.shortLink}}">{{link.shortLink}}</a></h4>
+    </div>
+    <div class="card-body">
+        <img src="./../../assets/qr-code.svg" alt="QR-code">
+        <ul class="list-unstyled mt-3 mb-4">
+            <li>Full link: <a href="{{link.link}}">{{link.link}}</a></li>
+            <li>Created {{link.created | timeago}}</li>
+        </ul>
+        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Copy link</button>
+    </div>
+</div>

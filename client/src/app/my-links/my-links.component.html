@@ -1,1 +1,25 @@
-<p>my-links works!</p>
+<div class="container">
+    <h2>Create a short link</h2>
+    <form [formGroup]="createLinkForm" (ngSubmit)="createLink()" autocomplete="off">
+        <input 
+            formControlName="link"
+            class="form-control my-2"
+            placeholder="Enter a link you want to shorten"
+        >
+        <select formControlName="expiryDate" class="form-select mb-2">
+            <option value="12">For 12 hours</option>
+            <option value="24">For 24 hours</option>
+            <option value="168">For 7 days</option>
+            <option value="336">For 14 days</option>
+            <option value="720">For 1 month</option>
+            <option value="2160">For 3 months</option>
+            <option value="4320">For 6 months</option>
+        </select>
+        <button [disabled]="!createLinkForm.valid" type="submit" class="btn btn-success mb-3">Create link</button>
+    </form>
+    <h2>Your earlier created links</h2>
+    <div class="row">
+        <div class="col-lg-4" *ngFor="let link of myLinks$ | async">
+        <app-link-item [link]="link"></app-link-item>
+    </div>
+</div>

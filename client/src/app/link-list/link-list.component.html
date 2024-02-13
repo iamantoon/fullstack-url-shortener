@@ -1,1 +1,6 @@
-<p>link-list works!</p>
+<div class="container">
+    <div class="row">
+      <div class="col-lg-4" *ngFor="let link of links$ | async">
+        <app-link-item [link]="link"></app-link-item>
+    </div>
+</div>

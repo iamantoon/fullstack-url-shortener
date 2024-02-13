@@ -10,5 +10,6 @@ namespace API.Data
         }
 
         public DbSet<AppLink> Links { get; set; }
+        public DbSet<AppUser> Users { get; set; }
     }
 }
