@@ -4,16 +4,28 @@
             <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
         </div>
         <div class="modal-body p-5 pt-0">
-            <form class="">
+            <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
+                    <input 
+                        formControlName="email"
+                        type="email" 
+                        class="form-control rounded-3" 
+                        id="email" 
+                        placeholder="name@example.com"
+                    >
+                    <label for="email">Email address</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">Password</label>
+                    <input 
+                        formControlName="password"
+                        type="password" 
+                        class="form-control rounded-3" 
+                        id="password" 
+                        placeholder="Password"
+                    >
+                    <label for="password">Password</label>
                 </div>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>
+                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" [disabled]="!registerForm.valid" type="submit">Sign up</button>
                 <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
                 <hr class="my-4">
                 <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>

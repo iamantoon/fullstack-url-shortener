@@ -1,0 +1,40 @@
+<div class="container my-4">
+    <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Login</h1>
+        </div>
+        <div class="modal-body p-5 pt-0">
+            <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
+                <div class="form-floating mb-3">
+                    <input
+                        [(ngModel)]="model.email"
+                        name="email"
+                        class="form-control rounded-3"
+                        placeholder="Email"
+                        id="floatingInput"
+                    >
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input
+                        [(ngModel)]="model.password"
+                        name="password"
+                        class="form-control mb-2"
+                        type="password"
+                        placeholder="Password"
+                    >
+                    <label for="floatingPassword">Password</label>
+                </div>
+                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary">Login</button>
+                <hr class="my-4">
+                <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+                <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
+                    Sign up with Google
+                </button>
+                <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit">
+                    Sign up with Facebook
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

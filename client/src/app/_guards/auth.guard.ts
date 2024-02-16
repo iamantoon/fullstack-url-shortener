@@ -8,15 +8,14 @@ export const authGuard: CanActivateFn = (route, state) => {
   const accountService = inject(AccountService);
   const toastr = inject(ToastrService);
 
-  // return accountService.currentUser$.pipe(
-  //   map(user => {
-  //     if (user) return true;
-  //     else {
-  //       toastr.error("You must have be authorised to access this page");
-  //       return false;
-  //     }
-  //   })
-  // )
-
-  return true;
-};
+  return accountService.currentUser$.pipe(
+    map(user => {
+      if (user) {
+        return true;
+      } else {
+        toastr.error('You must be authorized to see it');
+        return false;
+      }
+    })
+  ) 
+}

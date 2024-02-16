@@ -6,7 +6,7 @@
     </div>
 
     <div class="my-5 px-5">
-        <form [formGroup]="linkForm" (ngSubmit)="convertLink()" class="d-flex flex-column flex-sm-row gap-1" autocomplete="off">
+        <form [formGroup]="linkForm" (ngSubmit)="shortenLink()" class="d-flex flex-column flex-sm-row gap-1" autocomplete="off">
             <input 
                 formControlName="link"
                 type="text" 
@@ -15,6 +15,28 @@
             >
             <button [disabled]="!linkForm.valid" class="btn btn-success" type="submit">Shorten</button>
         </form>
+    </div>
+
+    <div class="my-5 px-5 bg-body rounded shadow-sm" *ngIf="(this.linkService.currentLinks$ | async) as links">
+        <div class="d-flex justify-content-between align-items-center text-body-secondary pt-3" *ngFor="let link of links">
+            <div>
+                <h5><strong class="d-block text-gray-dark">
+                    <a href="{{link.shortLink}}" target="_blank">{{link.shortLink}}</a>
+                </strong></h5>
+                <p class="pb-3 mb-0 text-muted">{{link.link}}</p>
+            </div>
+            <div class="d-flex">
+                <span class="controls" (click)="copyLink()">
+                    <i class="fa fa-copy text-warning"></i>
+                </span>
+                <span class="controls">
+                    <i class="fa fa-bookmark text-success"></i>
+                </span>
+                <span class="controls" (click)="deleteLink(link.id)">
+                    <i class="fa fa-trash text-danger"></i>
+                </span>
+            </div>  
+        </div>
     </div>
 
     <div class="container d-flex flex-column align-items-center justify-content-center">

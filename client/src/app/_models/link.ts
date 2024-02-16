@@ -3,5 +3,6 @@ export interface Link {
     shortLink: string;
     link: string;
     created: string;
+    expiryDate?: string;
     userId: number;
 }

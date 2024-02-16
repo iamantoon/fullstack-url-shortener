@@ -24,7 +24,7 @@ export class MyLinksComponent implements OnInit {
   initializeForm(){
     this.createLinkForm = new FormGroup({
       link: new FormControl('', [Validators.required, Validators.pattern(/^(ftp|http|https):\/\/[^ "]+$/)]),
-      expiryDate: new FormControl('', [Validators.required])
+      expiryDate: new FormControl('For 12 hours', [Validators.required])
     })
   }
 
@@ -41,25 +41,25 @@ export class MyLinksComponent implements OnInit {
     let expiryDate;
     switch (this.createLinkForm.get('expiryDate')?.value) {
       case '12':
-          expiryDate = this.formatDate(new Date(Date.now() + 12 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 12 * 60 * 60 * 1000));
           break;
       case '24':
-          expiryDate = this.formatDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
           break;
       case '168':
-          expiryDate = this.formatDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
           break;
       case '336':
-          expiryDate = this.formatDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
           break;
       case '720':
-          expiryDate = this.formatDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
           break;
       case '2160':
-          expiryDate = this.formatDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
           break;
       case '4320':
-          expiryDate = this.formatDate(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000));
+          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000));
           break;
       default:
           this.toastr.error('Invalid date');
@@ -75,24 +75,5 @@ export class MyLinksComponent implements OnInit {
       })
       this.createLinkForm.reset();
     }
-  }
-
-  private formatDate(date: any) {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-
-    const formattedHours = hours % 12 || 12;
-
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedMonth = month < 10 ? '0' + month : month;
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-    const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-
-    return `${formattedMonth}/${formattedDay}/${year} ${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
   }
 }

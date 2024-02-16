@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [],
@@ -12,11 +14,15 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     }),
     NgxSpinnerModule.forRoot({
       type: 'ball-atom'
-    })
+    }),
+    BrowserAnimationsModule,
+    BsDropdownModule.forRoot()
   ],
   exports: [
     ToastrModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    BrowserAnimationsModule,
+    BsDropdownModule
   ]
 })
 export class SharedModule { }

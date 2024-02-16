@@ -15,8 +15,17 @@
                     <a routerLink="/analytics" class="nav-link text-muted" routerLinkActive="active">Analytics</a>
                 </li>
             </ul>
-            <div class="text-end">
-                <button class="btn btn-outline-light me-2">Login</button>
+
+            <div class="dropdown" dropdown *ngIf="(this.accountService.currentUser$ | async) as user">
+                <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>{{user.email}}</a>
+                <div class="dropdown-menu" *dropdownMenu>
+                    <a class="dropdown-item">Edit links</a>
+                    <a class="dropdown-item" (click)="logout()">Logout</a>
+                </div>
+            </div>
+
+            <div class="text-end" *ngIf="!(this.accountService.currentUser$ | async)">
+                <button class="btn btn-outline-light me-2" routerLink="/login">Login</button>
                 <button class="btn btn-warning" routerLink="/register">Sign up</button>
             </div>
         </div>
