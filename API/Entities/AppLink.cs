@@ -7,6 +7,8 @@ namespace API.Entities
         public string Link { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime ExpiryDate { get; set; }
+        
         public int UserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
