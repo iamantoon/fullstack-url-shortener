@@ -1,4 +1,6 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -6,7 +8,8 @@ namespace API.Interfaces
     {
         void Update(AppLink link);
         Task<bool> SaveAllAsync();
-        Task<IEnumerable<AppLink>> GetLinksAsync();
-        Task<AppLink> GetLinkByIdAsync(int id);
+        Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams);
+        Task<PagedList<LinkDto>> GetPersonalLinksAsync(LinkParams linkParams, string currentUserEmail);
+        Task<LinkDto> GetLinkByIdAsync(int id);
     }
 }

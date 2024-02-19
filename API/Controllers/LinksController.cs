@@ -1,9 +1,11 @@
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -11,38 +13,40 @@ namespace API.Controllers
     {
         private readonly ILinkRepository _linkRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-        public LinksController(ILinkRepository linkRepository, IUserRepository userRepository, IMapper mapper)
+        public LinksController(ILinkRepository linkRepository, IUserRepository userRepository)
         {
             _linkRepository = linkRepository;
             _userRepository = userRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LinkDto>>> GetLinks()
+        public async Task<ActionResult<PagedList<LinkDto>>> GetLinks([FromQuery]LinkParams linkParams)
         {
-            var links = await _linkRepository.GetLinksAsync();
+            var links = await _linkRepository.GetLinksAsync(linkParams);
 
-            var linksToReturn = _mapper.Map<IEnumerable<LinkDto>>(links);
+            Response.AddPaginationHeader(new PaginationHeader(links.CurrentPage, links.PageSize, links.TotalCount, links.TotalPages));
 
-            return Ok(linksToReturn);
+            return Ok(links);
         }
 
-        [Authorize]
         [HttpGet("my")]
-        public async Task<ActionResult<IEnumerable<AppLink>>> GetMyLinks()
+        public async Task<ActionResult<PagedList<LinkDto>>> GetMyLinks([FromQuery]LinkParams linkParams)
         {
-            return Ok(await _linkRepository.GetLinksAsync());
+            var currentUserEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    
+            if (currentUserEmail == null)
+            {
+                return BadRequest("Unable to retrieve current user.");
+            }
+
+            return Ok(await _linkRepository.GetPersonalLinksAsync(linkParams, currentUserEmail));
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<LinkDto>> GetLink(int id)
         {
-            var link = await _linkRepository.GetLinkByIdAsync(id);
-
-            return _mapper.Map<LinkDto>(link);
+            return await _linkRepository.GetLinkByIdAsync(id);
         }
     }
 }

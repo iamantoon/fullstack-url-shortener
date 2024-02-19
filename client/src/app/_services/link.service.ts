@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Link } from '../_models/link';
 import { BehaviorSubject, map, of, take } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { v4 as uuidv4 } from 'uuid';
+import { PaginatedResult } from '../_models/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +16,28 @@ export class LinkService {
   private currentLinksSource = new BehaviorSubject<any | null>(null);
   currentLinks$ = this.currentLinksSource.asObservable();
   currentLinks: any[] = [];
+  paginatedResult: PaginatedResult<Link[]> = new PaginatedResult<Link[]>;
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
-  loadLinks(){
-    if (this.links.length > 0) return of(this.links);
-    return this.http.get<Link[]>(this.baseUrl + 'links').pipe(
-      map(links => {
-        this.links = links;
-        return links;
+  loadLinks(page?: number, itemsPerPage?: number){
+    let params = new HttpParams();
+
+    if (page && itemsPerPage) {
+      params = params.append("pageNumber", page);
+      params = params.append("pageSize", itemsPerPage);
+    }
+
+    return this.http.get<Link[]>(this.baseUrl + 'links', {observe: 'response', params}).pipe(
+      map(response => {
+        if (response.body){
+          this.paginatedResult.result = response.body;
+        }
+        const pagination = response.headers.get('Pagination');
+        if (pagination){
+          this.paginatedResult.pagination = JSON.parse(pagination);
+        }
+        return this.paginatedResult;
       })
     )
   }

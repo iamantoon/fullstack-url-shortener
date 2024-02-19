@@ -1,25 +1,43 @@
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using API.Helpers;
 
 namespace API.Data
 {
     public class LinkRepository : ILinkRepository
     {
         private readonly DataContext _context;
-        public LinkRepository(DataContext context)
+        private readonly IMapper _mapper;
+        public LinkRepository(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<AppLink> GetLinkByIdAsync(int id)
+        public async Task<LinkDto> GetLinkByIdAsync(int id)
         {
-            return await _context.Links.FindAsync(id);
+            return await _context.Links
+                .Where(user => user.Id == id)
+                .ProjectTo<LinkDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<AppLink>> GetLinksAsync()
+        public async Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams)
+        {              
+            var query = _context.Links.ProjectTo<LinkDto>(_mapper.ConfigurationProvider).AsNoTracking();
+            
+            return await PagedList<LinkDto>.CreateAsync(query, linkParams.PageNumber, linkParams.PageSize);
+        }
+
+        public async Task<PagedList<LinkDto>> GetPersonalLinksAsync(LinkParams linkParams, string currentUserEmail)
         {
-            return await _context.Links.ToListAsync();
+            var query = _context.Links.Where(u => u.AppUser.Email == currentUserEmail).ProjectTo<LinkDto>(_mapper.ConfigurationProvider).AsNoTracking();
+
+            return await PagedList<LinkDto>.CreateAsync(query, linkParams.PageNumber, linkParams.PageSize);
         }
 
         public async Task<bool> SaveAllAsync()
