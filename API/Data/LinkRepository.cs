@@ -57,6 +57,12 @@ namespace API.Data
             
             query = query.Where(u => u.AppUser.Email == currentUserEmail);
 
+            query = linkParams.OrderBy switch
+            {
+                "oldest" => query.OrderBy(link => link.Created),
+                _ => query.OrderByDescending(link => link.Created)
+            };
+
             return await PagedList<LinkDto>.CreateAsync(
                 query.ProjectTo<LinkDto>(_mapper.ConfigurationProvider).AsNoTracking(),
                 linkParams.PageNumber, 

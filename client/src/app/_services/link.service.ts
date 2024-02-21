@@ -111,15 +111,12 @@ export class LinkService {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-
-    const formattedHours = hours % 12 || 12;
 
     const formattedDay = day < 10 ? '0' + day : day;
     const formattedMonth = month < 10 ? '0' + month : month;
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
     const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
 
-    return `${formattedMonth}/${formattedDay}/${year} ${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+    return `${year}-${formattedMonth}-${formattedDay} ${hours}:${formattedMinutes}:${formattedSeconds}`;
   }
 }

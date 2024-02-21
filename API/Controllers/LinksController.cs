@@ -75,6 +75,7 @@ namespace API.Controllers
                 ShortLink = "https://genius.com/",
                 Link = createLinkDto.Link,
                 ExpiryDate = Convert.ToDateTime(createLinkDto.ExpiryDate),
+                UserId = currentUser.Id,
                 AppUser = currentUser
             };
 
