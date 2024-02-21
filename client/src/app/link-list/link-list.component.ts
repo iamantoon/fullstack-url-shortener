@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LinkService } from '../_services/link.service';
 import { Link } from '../_models/link';
-import { Observable } from 'rxjs';
 import { Pagination } from '../_models/pagination';
+import { LinkParams } from '../_models/linkParams';
 
 @Component({
   selector: 'app-link-list',
@@ -12,8 +12,7 @@ import { Pagination } from '../_models/pagination';
 export class LinkListComponent implements OnInit {
   links: Link[] | undefined;
   pagination: Pagination | undefined;
-  pageNumber = 1;
-  pageSize = 5;
+  linkParams: LinkParams = new LinkParams;
 
   constructor(private linkService: LinkService){}
 
@@ -22,7 +21,7 @@ export class LinkListComponent implements OnInit {
   }
 
   loadLinks(){
-    this.linkService.loadLinks(this.pageNumber, this.pageSize).subscribe({
+    this.linkService.loadLinks(this.linkParams).subscribe({
       next: response => {
         if (response.pagination && response.result){
           this.links = response.result;
@@ -33,9 +32,14 @@ export class LinkListComponent implements OnInit {
   }
 
   pageChanged(event: any){
-    if (this.pageNumber !== event.page){
-      this.pageNumber = event.page;
+    if (this.linkParams.pageNumber !== event.page){
+      this.linkParams.pageNumber = event.page;
       this.loadLinks();
     }
+  }
+
+  resetFilters(){
+    this.linkParams = new LinkParams();
+    this.loadLinks();
   }
 }

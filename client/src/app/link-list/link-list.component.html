@@ -1,22 +1,76 @@
-<div class="container">
-    <div class="row">
-      <div class="col-lg-4" *ngFor="let link of links">
-        <app-link-item [link]="link"></app-link-item>
-    </div>
+<div class="text-center mt-3">
+    <h2>{{pagination?.totalItems}} links found</h2>
 </div>
 
-<div class="d-flex justify-content-center" *ngIf="pagination">
-  <pagination 
-      [boundaryLinks]="true" 
-      [totalItems]="pagination.totalItems"  
-      [itemsPerPage]="pagination.itemsPerPage"
-      [maxSize]="10"
-      [(ngModel)]="pagination.currentPage"
-      (pageChanged)="pageChanged($event)"
-      previousText="&lsaquo;" 
-      nextText="&rsaquo;" 
-      firstText="&laquo;" 
-      lastText="&raquo;"
-  >
-  </pagination>
+<div class="containter mt-3 d-flex align-items-center justify-content-center" *ngIf="linkParams">
+    <form #form="ngForm" class="d-flex mb-4" (ngSubmit)="loadLinks()" autocomplete="off">
+        <div class="d-flex mx-2">
+            <label class="col-form-label">Link is active from</label>
+            <input 
+                type="number" 
+                class="form-control ms-1" 
+                style="width: 70px;" 
+                name="minExpireDate"
+                [(ngModel)]="linkParams.minExpiryDate"
+            >
+        </div>
+        <div class="d-flex mx-2">
+            <label class="col-form-label">Link is active to</label>
+            <input 
+                type="number" 
+                class="form-control ms-1" 
+                style="width: 70px;" 
+                name="maxExpireDate"
+                [(ngModel)]="linkParams.maxExpiryDate"
+            >
+        </div>
+
+        <button class="btn btn-primary ms-1" type="submit">Apply filters</button>
+        <button (click)="resetFilters()" class="btn btn-warning ms-1" type="submit">Reset filters</button>
+
+        <div class="col">
+            <div class="btn-group float-start ms-3">
+                <button 
+                    class="btn btn-primary" 
+                    name="orderBy" 
+                    (click)="loadLinks()"
+                    [(ngModel)]="linkParams.orderBy"
+                    btnRadio="newest"
+                    type="button"
+                >Newest links</button>
+                <button 
+                    class="btn btn-primary" 
+                    name="orderBy" 
+                    (click)="loadLinks()"
+                    [(ngModel)]="linkParams.orderBy"
+                    btnRadio="oldest"
+                    type="button"
+                >Oldest links</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4" *ngFor="let link of links">
+            <app-link-item [link]="link"></app-link-item>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center" *ngIf="pagination">
+        <pagination 
+            [boundaryLinks]="true" 
+            [totalItems]="pagination.totalItems"  
+            [itemsPerPage]="pagination.itemsPerPage"
+            [maxSize]="10"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" 
+            nextText="&rsaquo;" 
+            firstText="&laquo;" 
+            lastText="&raquo;"
+        >
+        </pagination>
+    </div>
 </div>

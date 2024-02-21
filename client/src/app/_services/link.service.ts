@@ -6,6 +6,7 @@ import { BehaviorSubject, map, of, take } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginatedResult } from '../_models/pagination';
+import { LinkParams } from '../_models/linkParams';
 
 @Injectable({
   providedIn: 'root'
@@ -16,28 +17,51 @@ export class LinkService {
   private currentLinksSource = new BehaviorSubject<any | null>(null);
   currentLinks$ = this.currentLinksSource.asObservable();
   currentLinks: any[] = [];
-  paginatedResult: PaginatedResult<Link[]> = new PaginatedResult<Link[]>;
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
-  loadLinks(page?: number, itemsPerPage?: number){
+  loadLinks(linkParams: LinkParams){
+    let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
+
+    params = params.append('minExpiryDate', linkParams.minExpiryDate);
+    params = params.append('maxExpiryDate', linkParams.maxExpiryDate);
+    params = params.append('orderBy', linkParams.orderBy);
+
+    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links', params);
+  }
+
+  loadPersonalLinks(linkParams: LinkParams){
+    let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
+
+    params = params.append('minExpiryDate', linkParams.minExpiryDate);
+    params = params.append('maxExpiryDate', linkParams.maxExpiryDate);
+    params = params.append('orderBy', linkParams.orderBy);
+
+    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links/my', params);
+  }
+
+  private getPaginationHeaders(pageNumber: number, pageSize: number){
     let params = new HttpParams();
+    
+    params = params.append("pageNumber", pageNumber);
+    params = params.append("pageSize", pageSize);
+    
+    return params;
+  }
 
-    if (page && itemsPerPage) {
-      params = params.append("pageNumber", page);
-      params = params.append("pageSize", itemsPerPage);
-    }
+  private getPaginatedResult<T>(url: string, params: HttpParams){
+    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>;
 
-    return this.http.get<Link[]>(this.baseUrl + 'links', {observe: 'response', params}).pipe(
+    return this.http.get<T>(url, {observe: 'response', params}).pipe(
       map(response => {
         if (response.body){
-          this.paginatedResult.result = response.body;
+          paginatedResult.result = response.body;
         }
         const pagination = response.headers.get('Pagination');
         if (pagination){
-          this.paginatedResult.pagination = JSON.parse(pagination);
+          paginatedResult.pagination = JSON.parse(pagination);
         }
-        return this.paginatedResult;
+        return paginatedResult;
       })
     )
   }
@@ -49,7 +73,7 @@ export class LinkService {
   }
 
   createLink(link: string, expiryDate: string){
-    return this.http.post(this.baseUrl + 'links', {link, expiryDate});
+    return this.http.post(this.baseUrl + 'links/create', {link, expiryDate});
   }
 
   getCurrentLinks() {

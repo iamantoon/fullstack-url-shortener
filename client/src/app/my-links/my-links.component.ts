@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { LinkService } from '../_services/link.service';
-import { Observable, map, of } from 'rxjs';
 import { Link } from '../_models/link';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { LinkParams } from '../_models/linkParams';
+import { Pagination } from '../_models/pagination';
 
 @Component({
   selector: 'app-my-links',
@@ -11,29 +12,34 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./my-links.component.scss']
 })
 export class MyLinksComponent implements OnInit {
-  myLinks$: Observable<Link[]> | undefined;
+  links: Link[] | undefined;
+  pagination: Pagination | undefined;
+  linkParams: LinkParams = new LinkParams;
   createLinkForm: FormGroup = new FormGroup({}); 
 
   constructor(private linkService: LinkService, private toastr: ToastrService){}
 
   ngOnInit(): void {
-    this.loadMyLinks();
+    this.loadPersonalLinks();
     this.initializeForm();
   }
 
   initializeForm(){
     this.createLinkForm = new FormGroup({
       link: new FormControl('', [Validators.required, Validators.pattern(/^(ftp|http|https):\/\/[^ "]+$/)]),
-      expiryDate: new FormControl('For 12 hours', [Validators.required])
+      expiryDate: new FormControl('12', [Validators.required])
     })
   }
 
-  loadMyLinks(){
-    this.myLinks$ = this.linkService.loadLinks().pipe(
-      map(links => {
-        return links.filter(l => l.userId === 1)
-      })
-    )
+  loadPersonalLinks(){
+    this.linkService.loadPersonalLinks(this.linkParams).subscribe({
+      next: response => {
+        if (response.pagination && response.result){
+          this.links = response.result;
+          this.pagination = response.pagination;
+        }
+      }
+    })
   }
 
   createLink(){
@@ -71,9 +77,24 @@ export class MyLinksComponent implements OnInit {
         next: response => {
           if (response!) this.toastr.success("Link was successfully created");
           else this.toastr.error("Error during creating link");
-        }
+        },
+        error: error => console.log(error)
       })
-      this.createLinkForm.reset();
+      this.createLinkForm.get('link')?.setValue('');
+      this.createLinkForm.get('expiryDate')?.setValue('12');
+      this.loadPersonalLinks();
     }
+  }
+
+  pageChanged(event: any){
+    if (this.linkParams.pageNumber !== event.page){
+      this.linkParams.pageNumber = event.page;
+      this.loadPersonalLinks();
+    }
+  }
+
+  resetFilters(){
+    this.linkParams = new LinkParams();
+    this.loadPersonalLinks();
   }
 }

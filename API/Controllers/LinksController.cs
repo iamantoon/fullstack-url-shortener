@@ -5,7 +5,9 @@ using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace API.Controllers
 {
@@ -39,7 +41,11 @@ namespace API.Controllers
                 return BadRequest("Unable to retrieve current user.");
             }
 
-            return Ok(await _linkRepository.GetPersonalLinksAsync(linkParams, currentUserEmail));
+            var links = await _linkRepository.GetPersonalLinksAsync(linkParams, currentUserEmail);
+
+            Response.AddPaginationHeader(new PaginationHeader(links.CurrentPage, links.PageSize, links.TotalCount, links.TotalPages));
+
+            return Ok(links);
         }
 
         [HttpGet]
@@ -48,5 +54,41 @@ namespace API.Controllers
         {
             return await _linkRepository.GetLinkByIdAsync(id);
         }
+
+        
+        [HttpPost("create")]
+        public async Task<ActionResult<LinkDto>> CreateLink(CreateLinkDto createLinkDto)
+        {
+            var currentUserEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+            if (currentUserEmail == null)
+            {
+                return BadRequest("Unable to retrieve current user");
+            }
+
+            var currentUser = await _userRepository.GetUserByEmailAsync(currentUserEmail);
+
+            if (await _linkRepository.LinkExists(createLinkDto.Link)) return BadRequest("You have already created this link");
+
+            var link = new AppLink
+            {
+                ShortLink = "https://genius.com/",
+                Link = createLinkDto.Link,
+                ExpiryDate = Convert.ToDateTime(createLinkDto.ExpiryDate),
+                AppUser = currentUser
+            };
+
+            await _linkRepository.CreateLink(link);
+            await _linkRepository.SaveAllAsync();
+
+            return new LinkDto
+            {
+                Id = link.Id,
+                ShortLink = link.ShortLink,
+                Link = link.Link,
+                Created = link.Created,
+                ExpiryDate = link.ExpiryDate
+            };
+        } 
     }
 }

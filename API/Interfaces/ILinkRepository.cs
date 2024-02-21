@@ -8,6 +8,8 @@ namespace API.Interfaces
     {
         void Update(AppLink link);
         Task<bool> SaveAllAsync();
+        Task<bool> CreateLink(AppLink link);
+        Task<bool> LinkExists(string link);
         Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams);
         Task<PagedList<LinkDto>> GetPersonalLinksAsync(LinkParams linkParams, string currentUserEmail);
         Task<LinkDto> GetLinkByIdAsync(int id);
