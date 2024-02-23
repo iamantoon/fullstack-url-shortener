@@ -1,8 +1,7 @@
 export class LinkParams {
-    minExpiryDate = 1;
-    maxExpiryDate = 365;
+    maxExpiryDate = 8640;
     pageNumber = 1;
-    pageSize = 5;
+    pageSize = 9;
     orderBy = 'newest';
     
     constructor(){}

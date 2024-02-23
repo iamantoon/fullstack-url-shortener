@@ -15,9 +15,15 @@ export class MyLinksComponent implements OnInit {
   links: Link[] | undefined;
   pagination: Pagination | undefined;
   linkParams: LinkParams = new LinkParams;
-  createLinkForm: FormGroup = new FormGroup({}); 
+  createLinkForm: FormGroup = new FormGroup({
+    link: new FormControl('', [Validators.required, Validators.pattern(/^(ftp|http|https):\/\/[^ "]+$/)]),
+    expiryDate: new FormControl('12', [Validators.required]),
+  }); 
+  filterForm: FormGroup = new FormGroup({filterByExpiryDate: new FormControl('8640')});
 
-  constructor(private linkService: LinkService, private toastr: ToastrService){}
+  constructor(private linkService: LinkService, private toastr: ToastrService){
+    this.linkParams = new LinkParams();
+  }
 
   ngOnInit(): void {
     this.loadPersonalLinks();
@@ -29,9 +35,16 @@ export class MyLinksComponent implements OnInit {
       link: new FormControl('', [Validators.required, Validators.pattern(/^(ftp|http|https):\/\/[^ "]+$/)]),
       expiryDate: new FormControl('12', [Validators.required])
     })
+    this.filterForm = new FormGroup({
+      filterByExpiryDate: new FormControl('8640')
+    })
   }
 
   loadPersonalLinks(){
+    this.linkParams.maxExpiryDate = this.filterForm.get('filterByExpiryDate')?.value;    
+    
+    if (!this.linkParams) return;
+
     this.linkService.loadPersonalLinks(this.linkParams).subscribe({
       next: response => {
         if (response.pagination && response.result){
@@ -44,36 +57,10 @@ export class MyLinksComponent implements OnInit {
 
   createLink(){
     const link = this.createLinkForm.get('link')?.value; 
-    let expiryDate;
-    switch (this.createLinkForm.get('expiryDate')?.value) {
-      case '12':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 12 * 60 * 60 * 1000));
-          break;
-      case '24':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
-          break;
-      case '168':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
-          break;
-      case '336':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
-          break;
-      case '720':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-          break;
-      case '2160':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
-          break;
-      case '4320':
-          expiryDate = this.linkService.getValidDate(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000));
-          break;
-      default:
-          this.toastr.error('Invalid date');
-          break;
-    }
+    const howManyHoursAccessible = this.createLinkForm.get('expiryDate')?.value;
 
-    if (link && expiryDate){
-      this.linkService.createLink(link, expiryDate).subscribe({
+    if (link && howManyHoursAccessible){
+      this.linkService.createLink(link, howManyHoursAccessible).subscribe({
         next: response => {
           if (response!) this.toastr.success("Link was successfully created");
           else this.toastr.error("Error during creating link");
@@ -95,6 +82,7 @@ export class MyLinksComponent implements OnInit {
 
   resetFilters(){
     this.linkParams = new LinkParams();
+    this.filterForm.get('filterByExpiryDate')?.setValue('8640');
     this.loadPersonalLinks();
   }
 }

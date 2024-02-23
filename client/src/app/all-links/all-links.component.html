@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="mt-4" *ngIf="pagination">
+        <h3>{{pagination.totalItems}} links found</h3>
+    </div>
+    <app-filters 
+        [linkParams]="linkParams" 
+        (loadLinks)="loadLinks()" 
+        (resetFilters)="resetFilters()" 
+        [formControl]="$any(filterForm.controls['filterByExpiryDate'])"
+    ></app-filters>
+    <app-link-list [links]="links"></app-link-list>
+    <div class="d-flex justify-content-center" *ngIf="pagination">
+        <pagination 
+            [boundaryLinks]="true" 
+            [totalItems]="pagination.totalItems"  
+            [itemsPerPage]="pagination.itemsPerPage"
+            [maxSize]="10"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="pageChanged($event)"
+            previousText="&lsaquo;" 
+            nextText="&rsaquo;" 
+            firstText="&laquo;" 
+            lastText="&raquo;"
+        >
+        </pagination>
+    </div>
+</div>

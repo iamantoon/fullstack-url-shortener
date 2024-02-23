@@ -14,30 +14,65 @@ import { LinkParams } from '../_models/linkParams';
 export class LinkService {
   baseUrl = environment.apiUrl;
   links: Link[] = [];
+  linkCache = new Map();
+  personalLinkCache = new Map();
+  linkParams: LinkParams | undefined;
+
   private currentLinksSource = new BehaviorSubject<any | null>(null);
   currentLinks$ = this.currentLinksSource.asObservable();
   currentLinks: any[] = [];
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {
+    this.linkParams = new LinkParams();
+  }
 
   loadLinks(linkParams: LinkParams){
+    const response = this.linkCache.get(Object.values(linkParams).join('-'));
+    
+    if (response) return of(response);
+
     let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
 
-    params = params.append('minExpiryDate', linkParams.minExpiryDate);
     params = params.append('maxExpiryDate', linkParams.maxExpiryDate);
     params = params.append('orderBy', linkParams.orderBy);
 
-    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links', params);
+    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links', params).pipe(
+      map(response => {
+        this.linkCache.set(Object.values(linkParams).join('-'), response);
+        return response;
+      })
+    )
   }
 
   loadPersonalLinks(linkParams: LinkParams){
+    const response = this.personalLinkCache.get(Object.values(linkParams).join('-'));
+
+    if (response) return of(response);
+
     let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
 
-    params = params.append('minExpiryDate', linkParams.minExpiryDate);
     params = params.append('maxExpiryDate', linkParams.maxExpiryDate);
     params = params.append('orderBy', linkParams.orderBy);
 
-    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links/my', params);
+    return this.getPaginatedResult<Link[]>(this.baseUrl + 'links/my', params).pipe(
+      map(response => {
+        this.personalLinkCache.set(Object.values(linkParams).join('-'), response);
+        return response;
+      })
+    )
+  }
+
+  getLinkParams(){
+    return this.linkParams;
+  }
+
+  setLinkParams(params: LinkParams){
+    this.linkParams = params;
+  }
+
+  resetLinkParams(){
+    this.linkParams = new LinkParams();
+    return this.linkParams;
   }
 
   private getPaginationHeaders(pageNumber: number, pageSize: number){
@@ -67,13 +102,17 @@ export class LinkService {
   }
 
   loadLink(id: number){
-    const link = this.links.find(link => link.id === id);
+    const link = [...this.linkCache.values()]
+      .reduce((arr, element) => arr.concat(element.result), [])
+      .find((link: Link) => link.id === id);
+
     if (link) return of(link);
+
     return this.http.get<Link>(this.baseUrl + 'links/' + id);
   }
 
-  createLink(link: string, expiryDate: string){
-    return this.http.post(this.baseUrl + 'links/create', {link, expiryDate});
+  createLink(link: string, howManyHoursAccessible: number){
+    return this.http.post(this.baseUrl + 'links/create', {link, howManyHoursAccessible});
   }
 
   getCurrentLinks() {

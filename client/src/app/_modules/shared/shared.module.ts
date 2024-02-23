@@ -7,6 +7,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
+
 @NgModule({
   declarations: [],
   imports: [
@@ -20,7 +21,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     BrowserAnimationsModule,
     BsDropdownModule.forRoot(),
     PaginationModule.forRoot(),
-    ButtonsModule.forRoot()
+    ButtonsModule.forRoot(),
   ],
   exports: [
     ToastrModule,
@@ -28,7 +29,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     BrowserAnimationsModule,
     BsDropdownModule,
     PaginationModule,
-    ButtonsModule
+    ButtonsModule,
   ]
 })
 export class SharedModule { }

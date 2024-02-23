@@ -30,11 +30,11 @@ namespace API.Data
         {              
             var query = _context.Links.AsQueryable();
 
-            var minExpiryDate = DateTime.Today.AddDays(linkParams.MinExpiryDate);
-            var maxExpiryDate = DateTime.Today.AddDays(linkParams.MaxExpiryDate);
+            var maxExpiryDate = DateTime.Now.AddHours(linkParams.MaxExpiryDate);
 
-            // query = query.Where(l => l.ExpiryDate >= minExpiryDate && l.ExpiryDate <= maxExpiryDate);
+            query = query.Where(l => l.ExpiryDate <= maxExpiryDate); 
             // query = query.Where(u => u.Email != userParams.Email);
+
             query = linkParams.OrderBy switch
             {
                 "oldest" => query.OrderBy(link => link.Created),
