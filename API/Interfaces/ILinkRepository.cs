@@ -12,6 +12,7 @@ namespace API.Interfaces
         Task<bool> LinkExists(string link);
         Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams);
         Task<PagedList<LinkDto>> GetPersonalLinksAsync(LinkParams linkParams, string currentUserEmail);
+        Task DeactivateExpiredLinks();
         Task<LinkDto> GetLinkByIdAsync(int id);
     }
 }

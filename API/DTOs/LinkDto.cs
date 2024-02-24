@@ -7,5 +7,6 @@ namespace API.DTOs
         public string Link { get; set; }
         public DateTime Created { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public bool Active { get; set; }
     }
 }

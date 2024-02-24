@@ -33,6 +33,7 @@ namespace API.Data
             var maxExpiryDate = DateTime.Now.AddHours(linkParams.MaxExpiryDate);
 
             query = query.Where(l => l.ExpiryDate <= maxExpiryDate); 
+            query = query.Where(l => l.Active != false);
             // query = query.Where(u => u.Email != userParams.Email);
 
             query = linkParams.OrderBy switch
@@ -52,10 +53,11 @@ namespace API.Data
         {
             var query = _context.Links.AsQueryable();
 
-            // var minExpiryDate = DateTime.Today.AddDays(linkParams.MinExpiryDate);
-            // var maxExpiryDate = DateTime.Today.AddDays(linkParams.MaxExpiryDate);
+            var maxExpiryDate = DateTime.Now.AddHours(linkParams.MaxExpiryDate);
             
             query = query.Where(u => u.AppUser.Email == currentUserEmail);
+            query = query.Where(l => l.Active != false);
+            query = query.Where(l => l.ExpiryDate <= maxExpiryDate);
 
             query = linkParams.OrderBy switch
             {
@@ -68,6 +70,18 @@ namespace API.Data
                 linkParams.PageNumber, 
                 linkParams.PageSize
             );
+        }
+
+        public async Task DeactivateExpiredLinks()
+        {
+            var expiredLinks = await _context.Links.Where(link => link.ExpiryDate < DateTime.UtcNow).ToListAsync();
+
+            foreach (var link in expiredLinks)
+            {
+                link.Active = false;
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> CreateLink(AppLink link)

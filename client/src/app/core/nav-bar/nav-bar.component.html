@@ -4,7 +4,7 @@
             <a routerLink="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                 <h2 class="heading">Shortly</h2>
             </a>
-            <ul class="nav navbar-nav d-flex flex-row gap-3">
+            <ul class="nav navbar-nav d-flex flex-row gap-4">
                 <li class="nav-item">
                     <a routerLink="/all" class="nav-link text-muted" routerLinkActive="active">All links</a>
                 </li>
@@ -12,10 +12,9 @@
                     <a routerLink="/my" class="nav-link text-muted" routerLinkActive="active">My links</a>
                 </li>
                 <li class="nav-item">
-                    <a routerLink="/analytics" class="nav-link text-muted" routerLinkActive="active">Analytics</a>
+                    <a routerLink="/statistics" class="nav-link text-muted" routerLinkActive="active">Statistics</a>
                 </li>
             </ul>
-
             <div class="dropdown" dropdown *ngIf="(this.accountService.currentUser$ | async) as user">
                 <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>{{user.email}}</a>
                 <div class="dropdown-menu" *dropdownMenu>
@@ -23,7 +22,6 @@
                     <a class="dropdown-item" (click)="logout()">Logout</a>
                 </div>
             </div>
-
             <div class="text-end" *ngIf="!(this.accountService.currentUser$ | async)">
                 <button class="btn btn-outline-light me-2" routerLink="/login">Login</button>
                 <button class="btn btn-warning" routerLink="/register">Sign up</button>

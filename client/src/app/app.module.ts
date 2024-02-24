@@ -8,7 +8,6 @@ import { CoreModule } from './core/core.module';
 import { HomeComponent } from './home/home.component';
 import { LinkListComponent } from './link-list/link-list.component';
 import { MyLinksComponent } from './my-links/my-links.component';
-import { AnalyticsComponent } from './analytics/analytics.component';
 import { RegisterComponent } from './register/register.component';
 import { FormsModule } from '@angular/forms';
 import { LinkItemComponent } from './link-item/link-item.component';
@@ -25,6 +24,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AllLinksComponent } from './all-links/all-links.component';
 import { FiltersComponent } from './filters/filters.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -32,14 +32,14 @@ import { FiltersComponent } from './filters/filters.component';
     HomeComponent,
     LinkListComponent,
     MyLinksComponent,
-    AnalyticsComponent,
     RegisterComponent,
     LinkItemComponent,
     LoginComponent,
     NotFoundComponent,
     ServerErrorComponent,
     AllLinksComponent,
-    FiltersComponent
+    FiltersComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,

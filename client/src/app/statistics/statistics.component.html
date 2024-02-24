@@ -1,0 +1,47 @@
+<div class="container" *ngIf="statistics">
+    <h2>Dashboard</h2>
+    <div class="my-3 text-center">
+        <h3>{{statistics.allLinksCount}} links has been created by our users</h3>
+        <h4>{{statistics.activeLinksCount}} of them is active, {{statistics.expiredLinksCount}} has expired</h4>
+    </div>
+    <div class="bd-example">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">Filter</th>
+                    <th scope="col">How many</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <tr>
+                    <td>1 hour</td>
+                    <td>{{statistics.linksExpiringInAHourCount}}</td>
+                </tr>
+                <tr>
+                    <td>24 hour</td>
+                    <td>{{statistics.linksExpiringInA24HoursCount}}</td>
+                </tr>
+                <tr>
+                    <td>A week</td>
+                    <td>{{statistics.linksExpiringInAWeekCount}}</td>
+                </tr>
+                <tr>
+                    <td>A month</td>
+                    <td>{{statistics.linksExpiringInAMonthCount}}</td>
+                </tr>
+                <tr>
+                    <td>Three months</td>
+                    <td>{{statistics.linksExpiringInThreeMonthCount}}</td>
+                </tr>
+                <tr>
+                    <td>Six months</td>
+                    <td>{{statistics.linksExpiringInSixMonthCount}}</td>
+                </tr>
+                <tr>
+                    <th>Active</th>
+                    <th>{{statistics.activeLinksCount}}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

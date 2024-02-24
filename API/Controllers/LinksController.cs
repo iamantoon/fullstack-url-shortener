@@ -24,6 +24,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<LinkDto>>> GetLinks([FromQuery]LinkParams linkParams)
         {
+            await _linkRepository.DeactivateExpiredLinks();
+
             var links = await _linkRepository.GetLinksAsync(linkParams);
 
             Response.AddPaginationHeader(new PaginationHeader(links.CurrentPage, links.PageSize, links.TotalCount, links.TotalPages));
@@ -76,7 +78,8 @@ namespace API.Controllers
                 Link = createLinkDto.Link,
                 ExpiryDate = Convert.ToDateTime(DateTime.Now.AddHours(createLinkDto.HowManyHoursAccessible)),
                 UserId = currentUser.Id,
-                AppUser = currentUser
+                AppUser = currentUser,
+                Active = true
             };
 
             await _linkRepository.CreateLink(link);
