@@ -9,12 +9,14 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { AllLinksComponent } from './all-links/all-links.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { MyStatisticsComponent } from './my-statistics/my-statistics.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'all', component: AllLinksComponent},
   {path: 'my', component: MyLinksComponent, canActivate: [authGuard]},
   {path: 'statistics', component: StatisticsComponent, canActivate: [authGuard]},
+  {path: 'my-statistics', component: MyStatisticsComponent, canActivate: [authGuard]},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'not-found', component: NotFoundComponent},

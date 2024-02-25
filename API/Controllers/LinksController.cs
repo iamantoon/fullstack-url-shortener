@@ -3,11 +3,10 @@ using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 using System.Security.Claims;
-using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace API.Controllers
 {
@@ -56,7 +55,6 @@ namespace API.Controllers
         {
             return await _linkRepository.GetLinkByIdAsync(id);
         }
-
         
         [HttpPost("create")]
         public async Task<ActionResult<LinkDto>> CreateLink(CreateLinkDto createLinkDto)
@@ -72,14 +70,17 @@ namespace API.Controllers
 
             if (await _linkRepository.LinkExists(createLinkDto.Link)) return BadRequest("You have already created this link");
 
+            string shortCode = GenerateShortCode(createLinkDto.Link);
+
             var link = new AppLink
             {
-                ShortLink = "https://genius.com/",
+                ShortLink = shortCode,
                 Link = createLinkDto.Link,
                 ExpiryDate = Convert.ToDateTime(DateTime.Now.AddHours(createLinkDto.HowManyHoursAccessible)),
                 UserId = currentUser.Id,
                 AppUser = currentUser,
-                Active = true
+                Active = true,
+                UsageCount = 0
             };
 
             await _linkRepository.CreateLink(link);
@@ -91,8 +92,30 @@ namespace API.Controllers
                 ShortLink = link.ShortLink,
                 Link = link.Link,
                 Created = link.Created,
-                ExpiryDate = DateTime.Now.AddHours(createLinkDto.HowManyHoursAccessible)
+                ExpiryDate = DateTime.Now.AddHours(createLinkDto.HowManyHoursAccessible),
+                UsageCount = link.UsageCount
             };
-        } 
+        }
+
+        [HttpGet]
+        [Route("s/{shortCode}")]
+        public async Task<ActionResult> RedirectUrl(string shortCode)
+        {
+            var url = await _linkRepository.GetLinkByShortCodeAsync(shortCode);
+            
+            if (url == null || !url.Active) return NotFound("This link does not exist or it has expired");
+
+            await _linkRepository.IncrementUsageCount(shortCode);
+
+            return Redirect(url.Link);
+        }
+
+        private string GenerateShortCode(string longUrl)
+        {
+            using var sha256 = SHA256.Create();
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(longUrl));
+            string base64Hash = Convert.ToBase64String(hashBytes);
+            return base64Hash.Substring(0, 6);
+        }
     }
 }

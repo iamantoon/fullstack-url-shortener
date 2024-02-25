@@ -3,6 +3,7 @@ export class LinkParams {
     pageNumber = 1;
     pageSize = 9;
     orderBy = 'newest';
+    all = false;
     
-    constructor(){}
+    constructor(maxExpiryDate?: number, pageNumber?: number, pageSize?: number, orderBy?: string, all?: boolean){}
 }

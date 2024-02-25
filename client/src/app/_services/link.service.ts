@@ -62,8 +62,6 @@ export class LinkService {
     )
   }
 
-  
-
   getLinkParams(){
     return this.linkParams;
   }

@@ -11,7 +11,8 @@ namespace API.Helpers
             set => _pageSize = (value > MaxPageSize ? MaxPageSize : value);
         }
 
-        public int MaxExpiryDate { get; set; } = 365;
+        public int MaxExpiryDate { get; set; } = 8640;
         public string OrderBy { get; set; } = "newest";
+        public bool All { get; set; } = false;
     }
 }

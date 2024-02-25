@@ -26,6 +26,14 @@ namespace API.Data
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<LinkDto> GetLinkByShortCodeAsync(string shortCode)
+        {
+            return await _context.Links
+                .Where(l => l.ShortLink == shortCode)
+                .ProjectTo<LinkDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams)
         {              
             var query = _context.Links.AsQueryable();
@@ -39,6 +47,7 @@ namespace API.Data
             query = linkParams.OrderBy switch
             {
                 "oldest" => query.OrderBy(link => link.Created),
+                "popular" => query.OrderByDescending(link => link.UsageCount),
                 _ => query.OrderByDescending(link => link.Created)
             };
             
@@ -56,12 +65,13 @@ namespace API.Data
             var maxExpiryDate = DateTime.Now.AddHours(linkParams.MaxExpiryDate);
             
             query = query.Where(u => u.AppUser.Email == currentUserEmail);
-            query = query.Where(l => l.Active != false);
+            if (!linkParams.All) query = query.Where(l => l.Active != false);
             query = query.Where(l => l.ExpiryDate <= maxExpiryDate);
 
             query = linkParams.OrderBy switch
             {
                 "oldest" => query.OrderBy(link => link.Created),
+                "popular" => query.OrderByDescending(link => link.UsageCount),
                 _ => query.OrderByDescending(link => link.Created)
             };
 
@@ -88,6 +98,19 @@ namespace API.Data
         {
             _context.Links.Add(link);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task IncrementUsageCount(string shortCode)
+        {
+            var link = await _context.Links.FirstOrDefaultAsync(l => l.ShortLink == shortCode);
+            link.UsageCount++;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsLinkActive(string link)
+        {
+            var url = await _context.Links.FirstOrDefaultAsync(l => l.Link == link);
+            return url.Active;
         }
 
         public async Task<bool> LinkExists(string link)

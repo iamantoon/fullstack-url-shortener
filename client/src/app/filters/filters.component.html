@@ -39,6 +39,14 @@
                 btnRadio="oldest"
                 type="button"
             >Oldest links</button>
+            <button 
+                class="btn btn-primary" 
+                name="orderBy" 
+                (click)="load()"
+                [(ngModel)]="linkParams.orderBy"
+                btnRadio="popular"
+                type="button"
+            >Most popular links</button>
         </div>
     </div>
 </div>

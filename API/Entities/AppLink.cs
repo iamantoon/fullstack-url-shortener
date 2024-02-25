@@ -8,6 +8,7 @@ namespace API.Entities
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime ExpiryDate { get; set; }
         public bool Active { get; set; }
+        public int UsageCount { get; set; }
         
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }

@@ -5,4 +5,5 @@ export interface Link {
     created: string;
     expiryDate?: string;
     userId: number;
+    usageCount: number;
 }

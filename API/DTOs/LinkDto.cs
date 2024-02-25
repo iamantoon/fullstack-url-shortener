@@ -8,5 +8,6 @@ namespace API.DTOs
         public DateTime Created { get; set; }
         public DateTime ExpiryDate { get; set; }
         public bool Active { get; set; }
+        public int UsageCount { get; set; }
     }
 }

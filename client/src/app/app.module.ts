@@ -25,6 +25,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AllLinksComponent } from './all-links/all-links.component';
 import { FiltersComponent } from './filters/filters.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { MyStatisticsComponent } from './my-statistics/my-statistics.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { StatisticsComponent } from './statistics/statistics.component';
     ServerErrorComponent,
     AllLinksComponent,
     FiltersComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    MyStatisticsComponent
   ],
   imports: [
     BrowserModule,
