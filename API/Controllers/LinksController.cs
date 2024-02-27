@@ -112,10 +112,17 @@ namespace API.Controllers
 
         private string GenerateShortCode(string longUrl)
         {
-            using var sha256 = SHA256.Create();
-            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(longUrl));
-            string base64Hash = Convert.ToBase64String(hashBytes);
-            return base64Hash.Substring(0, 6);
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(longUrl));
+                string base64Hash = Convert.ToBase64String(hashBytes);
+
+                base64Hash = base64Hash.Replace('+', '-').Replace('/', '_');
+
+                string alphanumericShortCode = new string(base64Hash.Where(char.IsLetterOrDigit).ToArray());
+
+                return alphanumericShortCode.Substring(0, Math.Min(alphanumericShortCode.Length, 6));
+            }
         }
     }
 }
