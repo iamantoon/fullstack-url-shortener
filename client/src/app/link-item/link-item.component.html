@@ -7,9 +7,13 @@
             <img src="./../../assets/qr-code.svg" alt="QR-code">
         </div>
         <ul class="list-unstyled mt-3 mb-4">
-            <li>Full link: <a href="{{link.link}}">{{link.link}}</a></li>
+            <li>Full link: <a href="{{link.link}}" target="_blank">{{link.link}}</a></li>
             <li>Created {{link.created | timeago}}</li>
         </ul>
-        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Copy link</button>
+        <button 
+            type="button" 
+            class="w-100 btn btn-lg btn-outline-primary"
+            (click)="copyToClipboard(baseUrl + 'links/s/' + link.shortLink)"
+        >Copy link</button>
     </div>
 </div>

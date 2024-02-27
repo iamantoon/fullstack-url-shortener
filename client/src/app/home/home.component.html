@@ -2,45 +2,18 @@
     <div class="d-flex flex-column align-items-center justify-content-center">
         <h1 class="text-center fw-bold display-5">More than just shorter links</h1>
         <p class="text-center text-body-secondary text">Build your brand's recognition and get detailed insights<br> on how your links are performing</p>
-        <button class="btn btn-lg btn-secondary">Get started</button>
-    </div>
-
-    <div class="my-5 px-5">
-        <form [formGroup]="linkForm" (ngSubmit)="shortenLink()" class="d-flex flex-column flex-sm-row gap-1" autocomplete="off">
-            <input 
-                formControlName="link"
-                type="text" 
-                class="form-control" 
-                placeholder="Shorten a link here..."
-            >
-            <button [disabled]="!linkForm.valid" class="btn btn-success" type="submit">Shorten</button>
-        </form>
-    </div>
-
-    <div class="my-5 px-5 bg-body rounded shadow-sm" *ngIf="(this.linkService.currentLinks$ | async) as links">
-        <div class="d-flex justify-content-between align-items-center text-body-secondary pt-3" *ngFor="let link of links">
-            <div>
-                <h5><strong class="d-block text-gray-dark">
-                    <a href="{{link.shortLink}}" target="_blank">{{link.shortLink}}</a>
-                </strong></h5>
-                <p class="pb-3 mb-0 text-muted">{{link.link}}</p>
-            </div>
-            <div class="d-flex">
-                <span class="controls" (click)="copyLink()">
-                    <i class="fa fa-copy text-warning"></i>
-                </span>
-                <span class="controls">
-                    <i class="fa fa-bookmark text-success"></i>
-                </span>
-                <span class="controls" (click)="deleteLink(link.id)">
-                    <i class="fa fa-trash text-danger"></i>
-                </span>
-            </div>  
+        <button class="btn btn-lg btn-secondary" routerLink="/my" *ngIf="user">Get started</button>
+        <div *ngIf="!user" class="d-flex gap-3">
+            <button class="btn btn-lg btn-primary" routerLink="/login">Login</button>
+            <button class="btn btn-lg btn-warning" routerLink="/register">Register</button>
         </div>
     </div>
 
-    <div class="container d-flex flex-column align-items-center justify-content-center">
+    <div class="container d-flex flex-column align-items-center justify-content-center my-4">
         <h1 class="text-center fw-bold display-5">Advanced statistics</h1>
-        <p class="text-center text-body-secondary">Track how your links are performing across the web with <br>our advanced <a routerLink="/analytics">statistics dashboard</a></p>
+        <p class="text-center text-body-secondary">
+            Track how your links are performing across the web with <br>our advanced 
+            <a routerLink="/statistics">statistics dashboard</a>
+        </p>
     </div>
 </div>

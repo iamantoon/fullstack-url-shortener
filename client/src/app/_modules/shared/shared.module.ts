@@ -7,13 +7,12 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
-
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
     ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right'
+      positionClass: 'toast-bottom-right',
     }),
     NgxSpinnerModule.forRoot({
       type: 'ball-atom'

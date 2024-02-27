@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Link } from '../_models/link';
-import { BehaviorSubject, map, of, take } from 'rxjs';
+import { map, of } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { v4 as uuidv4 } from 'uuid';
 import { PaginatedResult } from '../_models/pagination';
 import { LinkParams } from '../_models/linkParams';
 
@@ -18,11 +17,7 @@ export class LinkService {
   personalLinkCache = new Map();
   linkParams: LinkParams | undefined;
 
-  private currentLinksSource = new BehaviorSubject<any | null>(null);
-  currentLinks$ = this.currentLinksSource.asObservable();
-  currentLinks: any[] = [];
-
-  constructor(private http: HttpClient, private toastr: ToastrService) {
+  constructor(private http: HttpClient) {
     this.linkParams = new LinkParams();
   }
 
@@ -44,10 +39,12 @@ export class LinkService {
     )
   }
 
-  loadPersonalLinks(linkParams: LinkParams){
-    const response = this.personalLinkCache.get(Object.values(linkParams).join('-'));
+  loadPersonalLinks(linkParams: LinkParams, force?: boolean){
+    if (!force){
+      const response = this.personalLinkCache.get(Object.values(linkParams).join('-'));
 
-    if (response) return of(response);
+      if (response) return of(response);
+    }
 
     let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
 
@@ -113,34 +110,6 @@ export class LinkService {
 
   createLink(link: string, howManyHoursAccessible: number){
     return this.http.post(this.baseUrl + 'links/create', {link, howManyHoursAccessible});
-  }
-
-  getCurrentLinks() {
-    return this.currentLinksSource.pipe(take(1)).subscribe({
-      next: links => {
-        if (links) {
-          this.currentLinks = links;
-        }
-      }
-    });
-  }
-
-  updateLinks(links: any[]){
-    this.currentLinksSource.next(links);
-  }
-
-  shortenLink(link: string){
-    // link short logic
-    this.getCurrentLinks();
-    this.currentLinksSource.next([
-      ...this.currentLinks, 
-      {
-        id: uuidv4(),
-        link: link.link, 
-        shortLink: 'https://t.ly/Ks8y1', 
-        expiryDate: this.getValidDate(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000))
-      }
-    ]);
   }
 
   public getValidDate(date: any){

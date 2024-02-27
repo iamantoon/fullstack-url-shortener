@@ -3,6 +3,7 @@ import { LinkService } from '../_services/link.service';
 import { Link } from '../_models/link';
 import { LinkParams } from '../_models/linkParams';
 import { Pagination } from '../_models/pagination';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-my-statistics',
@@ -10,6 +11,7 @@ import { Pagination } from '../_models/pagination';
   styleUrls: ['./my-statistics.component.scss']
 })
 export class MyStatisticsComponent implements OnInit {
+  baseUrl = environment.apiUrl;
   links: Link[] = [];
   pagination: Pagination | undefined;
   linkParams: LinkParams = new LinkParams;

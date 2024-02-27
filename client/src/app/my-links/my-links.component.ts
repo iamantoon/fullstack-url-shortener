@@ -26,7 +26,7 @@ export class MyLinksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPersonalLinks();
+    this.loadPersonalLinks(false);
     this.initializeForm();
   }
 
@@ -40,12 +40,12 @@ export class MyLinksComponent implements OnInit {
     })
   }
 
-  loadPersonalLinks(){
+  loadPersonalLinks(force: boolean){
     this.linkParams.maxExpiryDate = this.filterForm.get('filterByExpiryDate')?.value;    
     
     if (!this.linkParams) return;
 
-    this.linkService.loadPersonalLinks(this.linkParams).subscribe({
+    this.linkService.loadPersonalLinks(this.linkParams, force).subscribe({
       next: response => {
         if (response.pagination && response.result){
           this.links = response.result;
@@ -69,20 +69,20 @@ export class MyLinksComponent implements OnInit {
       })
       this.createLinkForm.get('link')?.setValue('');
       this.createLinkForm.get('expiryDate')?.setValue('12');
-      this.loadPersonalLinks();
+      this.loadPersonalLinks(true);
     }
   }
 
   pageChanged(event: any){
     if (this.linkParams.pageNumber !== event.page){
       this.linkParams.pageNumber = event.page;
-      this.loadPersonalLinks();
+      this.loadPersonalLinks(false);
     }
   }
 
   resetFilters(){
     this.linkParams = new LinkParams();
     this.filterForm.get('filterByExpiryDate')?.setValue('8640');
-    this.loadPersonalLinks();
+    this.loadPersonalLinks(false);
   }
 }

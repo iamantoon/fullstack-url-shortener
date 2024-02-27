@@ -4,6 +4,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment.development';
 import { Router } from '@angular/router';
+import { LinkService } from './link.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AccountService {
   private currentUserSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private linkService: LinkService) {}
 
   login(model: any){
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
@@ -46,6 +47,9 @@ export class AccountService {
   logout(){
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    this.linkService.linkCache.clear();
+    this.linkService.personalLinkCache.clear();
+    this.linkService.links = [];
     this.router.navigateByUrl('/');
   }
 }

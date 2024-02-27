@@ -18,7 +18,6 @@
             <div class="dropdown" dropdown *ngIf="(this.accountService.currentUser$ | async) as user">
                 <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>{{user.email}}</a>
                 <div class="dropdown-menu" *dropdownMenu>
-                    <a class="dropdown-item">Edit links</a>
                     <a class="dropdown-item" (click)="logout()">Logout</a>
                 </div>
             </div>

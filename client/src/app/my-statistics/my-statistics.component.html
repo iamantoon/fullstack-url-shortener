@@ -1,23 +1,25 @@
 <div class="container my-4">
-    <table class="table text-center" *ngIf="links.length > 0">
-        <thead>
-            <tr>
-                <th scope="col">Short Link</th>
-                <th scope="col">Full Link</th>
-                <th scope="col">Created</th>
-                <th scope="col">Expired</th>
-                <th scope="col">How many times was used</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let link of links">
-                <td>{{ link.shortLink }}</td>
-                <td>{{ link.link }}</td>
-                <td>{{ link.created | date}}</td>
-                <td>{{ link.expiryDate | date}}</td>
-                <td>{{ link.usageCount }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table text-center table-sm" *ngIf="links.length > 0">
+            <thead>
+                <tr>
+                    <th scope="col">Short Link</th>
+                    <th scope="col">Full Link</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Expired</th>
+                    <th scope="col">How many times was used</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let link of links">
+                    <td><a href="{{baseUrl}}links/s/{{link.shortLink}}" target="_blank">{{baseUrl}}links/s/{{link.shortLink}}</a></td>
+                    <td><a href="{{link.link}}" target="_blank">{{link.link | slice:0:45}}</a></td>
+                    <td>{{link.created | date}}</td>
+                    <td>{{link.expiryDate | date}}</td>
+                    <td>{{link.usageCount}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <h2 *ngIf="links.length === 0" class="text-center">You haven't created any links yet</h2>
 </div>
