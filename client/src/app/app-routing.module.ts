@@ -10,11 +10,12 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { AllLinksComponent } from './all-links/all-links.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { MyStatisticsComponent } from './my-statistics/my-statistics.component';
+import { urlResolver } from './_resolvers/url.resolver';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'all', component: AllLinksComponent},
-  {path: 'my', component: MyLinksComponent, canActivate: [authGuard]},
+  {path: 'my', component: MyLinksComponent, canActivate: [authGuard], resolve: {url: urlResolver}},
   {path: 'statistics', component: StatisticsComponent, canActivate: [authGuard]},
   {path: 'my-statistics', component: MyStatisticsComponent, canActivate: [authGuard]},
   {path: 'register', component: RegisterComponent},

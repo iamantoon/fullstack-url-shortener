@@ -18,12 +18,11 @@ namespace API.Data
             _mapper = mapper;
         }
 
-        public async Task<LinkDto> GetLinkByIdAsync(int id)
+        public async Task<AppLink> GetLinkByIdAsync(int id)
         {
             return await _context.Links
-                .Where(user => user.Id == id)
-                .ProjectTo<LinkDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .Include(x => x.AppUser)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<LinkDto> GetLinkByShortCodeAsync(string shortCode)
@@ -113,9 +112,9 @@ namespace API.Data
             return url.Active;
         }
 
-        public async Task<bool> LinkExists(string link)
+        public async Task<bool> LinkExists(string link, string currentUserEmail)
         {
-            return await _context.Links.AnyAsync(l => l.Link == link);
+            return await _context.Links.AnyAsync(l => l.Link == link && l.AppUser.Email == currentUserEmail);
         }
 
         public async Task<bool> SaveAllAsync()
@@ -126,6 +125,19 @@ namespace API.Data
         public void Update(AppLink link)
         {
             _context.Entry(link).State = EntityState.Modified;
+        }
+
+        public async Task<bool> DeleteLinkAsync(int id)
+        {
+            var link = await _context.Links.FindAsync(id);
+
+            if (link != null)
+            {
+                _context.Links.Remove(link);
+                return await _context.SaveChangesAsync() > 0;
+            }
+
+            return false;
         }
     }
 }

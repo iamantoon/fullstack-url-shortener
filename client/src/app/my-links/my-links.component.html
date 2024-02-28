@@ -9,7 +9,6 @@
             <option value="336">For 14 days</option>
             <option value="720">For 1 month</option>
             <option value="2160">For 3 months</option>
-            <option value="4320">For 6 months</option>
         </select>
         <button [disabled]="!createLinkForm.valid" type="submit" class="btn btn-success mb-3">Create link</button>
     </form>
@@ -18,7 +17,7 @@
 
     <app-filters
         [linkParams]="linkParams" 
-        (loadLinks)="loadPersonalLinks(false)" 
+        (loadLinks)="loadPersonalLinks()" 
         (resetFilters)="resetFilters()" 
         [formControl]="$any(filterForm.controls['filterByExpiryDate'])"
     ></app-filters>

@@ -3,7 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { Link } from '../_models/link';
 import { map, of } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { PaginatedResult } from '../_models/pagination';
 import { LinkParams } from '../_models/linkParams';
 
@@ -39,13 +38,11 @@ export class LinkService {
     )
   }
 
-  loadPersonalLinks(linkParams: LinkParams, force?: boolean){
-    if (!force){
-      const response = this.personalLinkCache.get(Object.values(linkParams).join('-'));
+  loadPersonalLinks(linkParams: LinkParams){
+    const response = this.personalLinkCache.get(Object.values(linkParams).join('-'));
 
-      if (response) return of(response);
-    }
-
+    if (response) return of(response);
+    
     let params = this.getPaginationHeaders(linkParams.pageNumber, linkParams.pageSize);
 
     params = params.append('maxExpiryDate', linkParams.maxExpiryDate);
@@ -57,6 +54,10 @@ export class LinkService {
         return response;
       })
     )
+  }
+
+  deleteLink(id: number){
+    return this.http.delete(this.baseUrl + 'links/delete-link/' + id);
   }
 
   getLinkParams(){

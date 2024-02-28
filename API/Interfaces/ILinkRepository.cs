@@ -9,9 +9,10 @@ namespace API.Interfaces
         Task<PagedList<LinkDto>> GetLinksAsync(LinkParams linkParams);
         Task<PagedList<LinkDto>> GetPersonalLinksAsync(LinkParams linkParams, string currentUserEmail);
         Task<LinkDto> GetLinkByShortCodeAsync(string shortCode);
-        Task<LinkDto> GetLinkByIdAsync(int id);
+        Task<AppLink> GetLinkByIdAsync(int id);
         Task<bool> CreateLink(AppLink link);
-        Task<bool> LinkExists(string link);
+        Task<bool> DeleteLinkAsync(int id);
+        Task<bool> LinkExists(string link, string currentUserEmail);
         Task<bool> IsLinkActive(string link);
         Task IncrementUsageCount(string shortCode);
         Task DeactivateExpiredLinks();

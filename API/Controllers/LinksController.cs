@@ -51,7 +51,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<LinkDto>> GetLink(int id)
+        public async Task<ActionResult<AppLink>> GetLink(int id)
         {
             return await _linkRepository.GetLinkByIdAsync(id);
         }
@@ -68,7 +68,7 @@ namespace API.Controllers
 
             var currentUser = await _userRepository.GetUserByEmailAsync(currentUserEmail);
 
-            if (await _linkRepository.LinkExists(createLinkDto.Link)) return BadRequest("You have already created this link");
+            if (await _linkRepository.LinkExists(createLinkDto.Link, currentUserEmail)) return BadRequest("You have already created this link");
 
             string shortCode = GenerateShortCode(createLinkDto.Link);
 
@@ -108,6 +108,21 @@ namespace API.Controllers
             await _linkRepository.IncrementUsageCount(shortCode);
 
             return Redirect(url.Link);
+        }
+
+        [HttpDelete("delete-link/{id}")]
+        public async Task<ActionResult<bool>> DeleteLinkAsync(int id)
+        {
+            var currentUserEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserEmail == null) return Unauthorized("Unauthorised");
+
+            var link = await _linkRepository.GetLinkByIdAsync(id);
+
+            if (link.AppUser.Email != currentUserEmail) return BadRequest("You cannot delete the links of other people");
+
+            if (await _linkRepository.DeleteLinkAsync(id)) return Ok();
+
+            return BadRequest("Problem deleting link");
         }
 
         private string GenerateShortCode(string longUrl)
